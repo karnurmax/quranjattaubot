@@ -1,0 +1,15 @@
+# .gitignore
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore .env file to protect sensitive information
+.env
+
+# Ignore cache and log files
+.cache/
+*.log
+
+# Ignore operating system specific files
+.DS_Store
+Thumbs.db
