@@ -9,7 +9,14 @@ const port = process.env.PORT || 3000;
 
 // Replace this token with your actual Telegram Bot Token
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: false });
-
+bot
+  .setWebhook(process.env.WEBHOOK_URL)
+  .then((result) => {
+    console.log("Webhook set successfully:", result);
+  })
+  .catch((error) => {
+    console.error("Error setting webhook:", error);
+  });
 const pool = new Pool({
   host: "localhost",
   database: "quran_jattau_db",
