@@ -18,11 +18,40 @@ bot
     console.error("Error setting webhook:", error);
   });
 const pool = new Pool({
-  host: "localhost",
-  database: "quran_jattau_db",
-  user: "postgres",
-  password: "your_password",
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
 });
+
+pool
+  .connect()
+  .then((client) => {
+    console.log("Database connected successfully.");
+
+    // Create feedback table if it does not exist
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS feedbacks (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
+        text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    return client.query(createTableQuery).finally(() => {
+      client.release(); // release the client back to the pool
+    });
+  })
+  .then(() => {
+    console.log("Feedback table checked/created successfully.");
+  })
+  .catch((err) => {
+    console.error(
+      "Error connecting to the database or creating table:",
+      err.stack
+    );
+  });
 
 // For parsing JSON payloads from Telegram
 app.use(bodyParser.json());
